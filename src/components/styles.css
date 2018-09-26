@@ -1,0 +1,34 @@
+/* Global Styles */
+
+#root {
+    /* display: flex; */
+}
+
+
+/* Search Component Styles */
+
+#search {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#search input {
+    padding: 10px;
+    flex-grow: 7;
+}
+
+#search img {
+    width: 50px;
+    flex-grow: 1;
+}
+
+#search button {
+    flex-grow: 1;
+    padding: 11px;
+    background: white;
+    border: 1px solid gray;
+    cursor: pointer;
+}
