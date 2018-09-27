@@ -1,9 +1,9 @@
 /* Global Styles */
 
-#root {
-    /* display: flex; */
+iframe {
+    border: none;
+    padding: 0.25em;
 }
-
 
 /* Search Component Styles */
 
@@ -31,4 +31,18 @@
     background: white;
     border: 1px solid gray;
     cursor: pointer;
+}
+
+/* Videos Component */
+
+#videos {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.video-items {
+    flex-grow: 5;
 }
