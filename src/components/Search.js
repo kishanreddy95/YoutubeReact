@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './styles.css';
+import { Row, Col } from 'react-bootstrap';
 
 class Search extends Component {
   constructor(props) {
@@ -23,11 +24,17 @@ class Search extends Component {
 
   render() {
     return (
-      <div id="search">
-        <img src="src/images/youtube.png" alt="YouTube Logo" />
-        <input id="textbox" type="text" placeholder="Search..." value={this.state.inputText} onChange={this.getData} />
-        <button onClick={this.searchButtonClickHandler} type="submit">Search</button>
-      </div>
+      <Row id="search">
+        <Col md={2}>
+          <img src="src/images/youtube.png" alt="YouTube Logo" />
+        </Col>
+        <Col md={8}>
+          <input id="textbox" type="text" placeholder="Search..." value={this.state.inputText} onChange={this.getData} />
+        </Col>
+        <Col md={2}>
+          <button onClick={this.searchButtonClickHandler} type="submit">Search</button>
+        </Col>
+      </Row>
     );
   }
 }
