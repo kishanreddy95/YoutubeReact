@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Row, Col} from 'react-bootstrap';
+import { Grid, Row } from 'react-bootstrap';
 import Search from './Search';
 import Videos from './Videos';
 import Playlist from './Playlist';
@@ -15,7 +15,7 @@ class App extends Component {
       },
     };
     this.searchText = this.searchText.bind(this);
-    this.playlistItems = this.playlistItems.bind(this);
+    this.playlistItemFunction = this.playlistItemFunction.bind(this);
     this.passToPlaylist = this.passToPlaylist.bind(this);
   }
 
@@ -24,14 +24,15 @@ class App extends Component {
     this.setState({ returnedData: dataFromSearch });
   }
 
-  // User clicks playlists
-  playlistItems(videosFromPlaylist) {
-    this.setState({ playlistToReturn: videosFromPlaylist });
+  // User clicks playlist menu
+  playlistItemFunction(videosFromPlaylist) {
+    console.log(videosFromPlaylist);
+    this.setState({ returnedData: videosFromPlaylist });
   }
 
-  // Add to playlists 
+  // User clicks add to playlist
   passToPlaylist(data) {
-    let obj = {
+    const obj = {
       id: data[0].etag,
       item: data[0],
     };
@@ -44,7 +45,7 @@ class App extends Component {
       <Grid id="main" fluid>
         <Search searchText={this.searchText} />
         <Row className="show-grid">
-          <Playlist playlistItem={this.state.playlistToReturn} />
+          <Playlist playlistItem={this.state.playlistToReturn} playlistItemFunction={this.playlistItemFunction} />
           <Videos passToParent={this.passToPlaylist} data={this.state.returnedData} />
         </Row>
       </Grid>
