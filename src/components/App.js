@@ -21,6 +21,11 @@ class App extends Component {
     this.getNewPlaylists = this.getNewPlaylists.bind(this);
   }
 
+  // Get newly created playlists
+  getNewPlaylists(playlist) {
+    this.setState({ playlistsAvailable: playlist });
+  }
+
   // User clicks search
   searchText(dataFromSearch) {
     this.setState({ returnedData: dataFromSearch });
@@ -30,11 +35,6 @@ class App extends Component {
   playlistItemFunction(videosFromPlaylist) {
     console.log(videosFromPlaylist);
     this.setState({ returnedData: videosFromPlaylist });
-  }
-
-  // Get newly created playlists
-  getNewPlaylists(playlist) {
-    this.setState({ playlistsAvailable: playlist });
   }
 
   // User clicks add to playlist
@@ -47,6 +47,7 @@ class App extends Component {
   }
 
   render() {
+    // console.log(this.state.returnedData);
     return (
       <Grid id="main" fluid>
         <Search searchText={this.searchText} />

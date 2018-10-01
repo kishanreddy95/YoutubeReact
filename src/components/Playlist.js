@@ -8,55 +8,71 @@ class Playlist extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // playlistName: '',
-      // playlist1: {
-      //   id: '',
-      //   videos: [],
-      // },
       id: '',
       playlistItems: [],
     };
     this.displayPlaylists = this.displayPlaylists.bind(this);
     this.updatePlaylists = this.updatePlaylists.bind(this);
     this.createPlaylist = this.createPlaylist.bind(this);
-    // this.createPlaylist = this.createPlaylist.bind(this);
   }
 
-  componentDidUpdate() {
-    console.log(this.state.playlistItems);
-    console.log(this.props.playlistItem);
-    this.state.playlistItems.forEach((item) => {
-      console.log(item.videos);
-      if(item.videos !== 0) {
-        this.updatePlaylists(this.props);
-      }
-    });
+  componentDidUpdate(nextProps, nextState) {
+    // Making sure that the playlistItem is present to prevent infinite looping
+    if (this.props.playlistItem.playlistId !== this.state.id) {
+      this.state.playlistItems.forEach((item) => {
+        if (item.videos.length === 0) {
+          this.updatePlaylists(this.props);
+        } else {
+          let count = 0;
+          item.videos.forEach((video) => {
+            // Checking if video is already present in a playlist
+            if (video.etag === this.props.playlistItem.item.etag) {
+              count = 1;
+            }
+          });
+          // If video is not present update the playlist
+          if (count !== 1) {
+            this.updatePlaylists(this.props);
+          }
+        }
+      });
+    }
   }
 
   // Update the existing playlists
   updatePlaylists(props) {
     const playlists = this.state.playlistItems.slice();
-    if(this.state.playlistItems.length !== 0) {
-      playlists[props.playlistItem.playlistId].videos.push(props.playlistItem.item);
-    }
-    console.log(playlists);
+
+    // Checking which playlist video belongs to and pushing it
+    playlists.forEach((playlist, index) => {
+      if (index === props.playlistItem.playlistId) {
+        playlist.videos.push(props.playlistItem.item);
+      }
+    });
     this.setState({ playlistItems: playlists, id: props.playlistItem.playlistId });
   }
 
   // View the playlists added
-  displayPlaylists() {
-    this.props.playlistItemFunction(this.state.playlistItems);
+  displayPlaylists(index) {
+    this.props.playlistItemFunction(this.state.playlistItems[index]);
   }
 
   // Creatting a new playlist
   createPlaylist() {
     const playlistItems = this.state.playlistItems.slice();
+    // Creates an empty playlist object
     const playlistObject = {
       name: this.playlistname.value,
       videos: [],
     };
+
+    // Pushing the playlist object into to existing playlists
     playlistItems.push(playlistObject);
+
+    // Update the playlistItems state
     this.setState({ playlistItems: playlistItems });
+
+    // Passing available playlists to the parent App.js component
     this.props.getNewPlaylists(playlistItems);
   }
 
@@ -84,7 +100,7 @@ class Playlist extends Component {
         </ListGroup>
         <ListGroup id="list-of-playlists">
           {this.state.playlistItems.map(
-            (item, index) => <ListGroupItem playlistId={index} onClick={this.displayPlaylists}>{item.name}</ListGroupItem>,
+            (item, index) => <ListGroupItem playlistId={index} onClick={() => { this.displayPlaylists(index); }}>{item.name}</ListGroupItem>,
           )}
         </ListGroup>
       </Col>

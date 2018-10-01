@@ -29,7 +29,7 @@ class Search extends Component {
           <img src="src/images/youtube.png" alt="YouTube Logo" />
         </Col>
         <Col md={8}>
-          <input id="textbox" type="text" placeholder="Search..." value={this.state.inputText} onChange={this.getData} />
+          <input id="textbox" type="text" placeholder="Search..." onChange={this.getData} />
         </Col>
         <Col md={2}>
           <button onClick={this.searchButtonClickHandler} type="submit">Search</button>

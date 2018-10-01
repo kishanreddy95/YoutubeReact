@@ -10,16 +10,15 @@ class Videos extends Component {
     this.state = {
       searchText: '',
       data: [],
-      playlistsAvailable: [],
     };
     this.updateVideos = this.updateVideos.bind(this);
     this.addToPlaylist = this.addToPlaylist.bind(this);
   }
 
   componentDidUpdate() {
-    // console.log(this.props.playlistItem);
-    if (this.props.data !== this.state.searchText && this.props.name !== this.state.searchText) {
-      this.updateVideos(this.props);
+    if (this.props.data !== this.state.searchText
+      && this.props.data.name !== this.state.searchText) {
+      this.updateVideos(this.props.data);
     }
   }
 
@@ -27,16 +26,17 @@ class Videos extends Component {
     const key = 'AIzaSyCgk0leS6QuJi0RBfPCaiKkOieT6O_qQXg';
 
     // Checking if search is clicked or a playlist item request
-    if (typeof props.data !== 'object') {
-      this.setState({ searchText: props.data });
-      fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=${props.data}&type=video&key=${key}`)
-        .then(data => data.json())
-        .then((videos) => {
-          this.setState({ data: videos.items });
-        });
+    if (typeof props === 'string') {
+      this.setState({ searchText: props }, () => {
+        fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=${props}&type=video&key=${key}`)
+          .then(data => data.json())
+          .then((videos) => {
+            this.setState({ data: videos.items });
+          });
+      });
     } else {
-      this.setState({ searchText: props[0].name, data: props.videos });
-      console.log(props);
+      this.setState({ searchText: props.name, data: props.videos }, () => {
+      });
     }
   }
 
@@ -48,18 +48,22 @@ class Videos extends Component {
   render() {
     return (
       <div id="videos">
-        {this.state.data.map(item => (
-          <Col md={4} className="video-items">
-            <iframe id={item.etag} src={item.snippet.thumbnails.medium.url} width={item.snippet.thumbnails.medium.width} height={item.snippet.thumbnails.medium.height} scrolling="no" />
-            <DropdownButton title="Add To Playlist">
-              {this.props.playlistsAvailable.map( 
-                (playlist, index) => {
-                  return <MenuItem id={index} onClick={() => this.addToPlaylist(item.etag, index)}>{playlist.name}</MenuItem>;
-                }
-              )}
-            </DropdownButton>
-          </Col>
-        ))}
+        {this.state.data !== undefined 
+          ? this.state.data.map(item => (
+            <Col md={4} className="video-items">
+              <iframe id={item.etag} src={item.snippet.thumbnails.medium.url} width={item.snippet.thumbnails.medium.width} height={item.snippet.thumbnails.medium.height} scrolling="no" />
+              <p><strong>{item.snippet.title}</strong></p>
+              <DropdownButton title="Add To Playlist">
+                {this.props.playlistsAvailable.map( 
+                  (playlist, index) => {
+                    return <MenuItem id={index} onClick={() => this.addToPlaylist(item.etag, index)}>{playlist.name}</MenuItem>;
+                  },
+                )}
+              </DropdownButton>
+            </Col>
+          ))
+          : <h2>Playlist Empty</h2>}
+          ;
       </div>
     );
   }
