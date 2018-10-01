@@ -10,13 +10,15 @@ class App extends Component {
     this.state = {
       returnedData: '',
       playlistToReturn: {
-        id: '',
+        playlistId: '',
         item: [],
       },
+      playlistsAvailable: [],
     };
     this.searchText = this.searchText.bind(this);
     this.playlistItemFunction = this.playlistItemFunction.bind(this);
     this.passToPlaylist = this.passToPlaylist.bind(this);
+    this.getNewPlaylists = this.getNewPlaylists.bind(this);
   }
 
   // User clicks search
@@ -30,14 +32,18 @@ class App extends Component {
     this.setState({ returnedData: videosFromPlaylist });
   }
 
+  // Get newly created playlists
+  getNewPlaylists(playlist) {
+    this.setState({ playlistsAvailable: playlist });
+  }
+
   // User clicks add to playlist
-  passToPlaylist(data) {
+  passToPlaylist(video, id) {
     const obj = {
-      id: data[0].etag,
-      item: data[0],
+      playlistId: id,
+      item: video[0],
     };
     this.setState({ playlistToReturn: obj });
-    return this.state.playlistToReturn;
   }
 
   render() {
@@ -45,8 +51,8 @@ class App extends Component {
       <Grid id="main" fluid>
         <Search searchText={this.searchText} />
         <Row className="show-grid">
-          <Playlist playlistItem={this.state.playlistToReturn} playlistItemFunction={this.playlistItemFunction} />
-          <Videos passToParent={this.passToPlaylist} data={this.state.returnedData} />
+          <Playlist playlistItem={this.state.playlistToReturn} playlistItemFunction={this.playlistItemFunction} getNewPlaylists={this.getNewPlaylists} />
+          <Videos passToParent={this.passToPlaylist} data={this.state.returnedData} playlistsAvailable={this.state.playlistsAvailable} />
         </Row>
       </Grid>
     );

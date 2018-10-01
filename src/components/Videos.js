@@ -10,13 +10,15 @@ class Videos extends Component {
     this.state = {
       searchText: '',
       data: [],
+      playlistsAvailable: [],
     };
     this.updateVideos = this.updateVideos.bind(this);
     this.addToPlaylist = this.addToPlaylist.bind(this);
   }
 
   componentDidUpdate() {
-    if (this.props.data !== this.state.searchText && this.props.data.id !== this.state.searchText) {
+    // console.log(this.props.playlistItem);
+    if (this.props.data !== this.state.searchText && this.props.name !== this.state.searchText) {
       this.updateVideos(this.props);
     }
   }
@@ -33,13 +35,14 @@ class Videos extends Component {
           this.setState({ data: videos.items });
         });
     } else {
-      this.setState({ searchText: props.data.id, data: props.data.videos });
+      this.setState({ searchText: props[0].name, data: props.videos });
+      console.log(props);
     }
   }
 
-  addToPlaylist(etag) {
+  addToPlaylist(etag, id) {
     const video = this.state.data.filter(item => item.etag === etag);
-    this.props.passToParent(video);
+    this.props.passToParent(video, id);
   }
 
   render() {
@@ -49,8 +52,11 @@ class Videos extends Component {
           <Col md={4} className="video-items">
             <iframe id={item.etag} src={item.snippet.thumbnails.medium.url} width={item.snippet.thumbnails.medium.width} height={item.snippet.thumbnails.medium.height} scrolling="no" />
             <DropdownButton title="Add To Playlist">
-              <MenuItem id={item.etag} onClick={() => this.addToPlaylist(item.etag)}>Playlist 1</MenuItem>
-              <MenuItem id={item.etag} onClick={() => this.addToPlaylist(item.etag)}>Playlist 2</MenuItem>
+              {this.props.playlistsAvailable.map( 
+                (playlist, index) => {
+                  return <MenuItem id={index} onClick={() => this.addToPlaylist(item.etag, index)}>{playlist.name}</MenuItem>;
+                }
+              )}
             </DropdownButton>
           </Col>
         ))}
