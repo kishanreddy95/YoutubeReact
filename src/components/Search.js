@@ -18,6 +18,7 @@ class Search extends Component {
     });
   }
 
+  // Send the search text to App Component on clicking search button
   searchButtonClickHandler() {
     this.props.searchText(this.state.inputText);
   }

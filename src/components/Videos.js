@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './styles.css';
 import {
-  Col, DropdownButton, MenuItem,
+  Col, DropdownButton, MenuItem, Button,
 } from 'react-bootstrap';
 
 class Videos extends Component {
@@ -9,6 +9,7 @@ class Videos extends Component {
     super(props);
     this.state = {
       searchText: '',
+      playlistText: '',
       data: [],
     };
     this.updateVideos = this.updateVideos.bind(this);
@@ -16,27 +17,26 @@ class Videos extends Component {
   }
 
   componentDidUpdate() {
-    if (this.props.data !== this.state.searchText
-      && this.props.data.name !== this.state.searchText) {
+    // Comparing the new props is not equal to previous state values to prevent infinite looping
+    if (this.props.data !== this.state.searchText && this.props.data.name !== this.state.playlistText) {
       this.updateVideos(this.props.data);
     }
   }
 
   updateVideos(props) {
     const key = 'AIzaSyCgk0leS6QuJi0RBfPCaiKkOieT6O_qQXg';
-
+    
     // Checking if search is clicked or a playlist item request
     if (typeof props === 'string') {
       this.setState({ searchText: props }, () => {
         fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=${props}&type=video&key=${key}`)
           .then(data => data.json())
           .then((videos) => {
-            this.setState({ data: videos.items });
+            this.setState({ playlistText: '', data: videos.items });
           });
       });
     } else {
-      this.setState({ searchText: props.name, data: props.videos }, () => {
-      });
+      this.setState({ searchText: '', playlistText: props.name, data: props.videos });
     }
   }
 
@@ -48,7 +48,8 @@ class Videos extends Component {
   render() {
     return (
       <div id="videos">
-        {this.state.data !== undefined 
+      
+        {this.state.searchText !== ''
           ? this.state.data.map(item => (
             <Col md={4} className="video-items">
               <iframe id={item.etag} src={item.snippet.thumbnails.medium.url} width={item.snippet.thumbnails.medium.width} height={item.snippet.thumbnails.medium.height} scrolling="no" />
@@ -62,8 +63,13 @@ class Videos extends Component {
               </DropdownButton>
             </Col>
           ))
-          : <h2>Playlist Empty</h2>}
-          ;
+          : this.state.data.map(item => (
+            <Col md={4} className="video-items">
+              <iframe id={item.etag} src={item.snippet.thumbnails.medium.url} width={item.snippet.thumbnails.medium.width} height={item.snippet.thumbnails.medium.height} scrolling="no" />
+              <p><strong>{item.snippet.title}</strong></p>
+              <Button>Delete</Button>
+            </Col>
+          ))}
       </div>
     );
   }

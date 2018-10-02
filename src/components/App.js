@@ -32,9 +32,11 @@ class App extends Component {
   }
 
   // User clicks playlist menu
-  playlistItemFunction(videosFromPlaylist) {
-    console.log(videosFromPlaylist);
-    this.setState({ returnedData: videosFromPlaylist });
+  playlistItemFunction(index) {
+    let playlistListToReturn  = this.state.playlistsAvailable[index];
+    this.setState({ returnedData: playlistListToReturn }, () => {
+      console.log(this.state.returnedData);
+    });
   }
 
   // User clicks add to playlist
@@ -43,11 +45,16 @@ class App extends Component {
       playlistId: id,
       item: video[0],
     };
-    this.setState({ playlistToReturn: obj });
+    let playlists = this.state.playlistsAvailable.slice();
+    playlists.forEach((playlist, index) => {
+      if (index === id) {
+        playlist.videos.push(obj.item);
+      }
+    });
+    this.setState({ playlistsAvailable: playlists });
   }
 
   render() {
-    // console.log(this.state.returnedData);
     return (
       <Grid id="main" fluid>
         <Search searchText={this.searchText} />
