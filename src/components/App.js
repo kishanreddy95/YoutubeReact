@@ -19,6 +19,7 @@ class App extends Component {
     this.playlistItemFunction = this.playlistItemFunction.bind(this);
     this.passToPlaylist = this.passToPlaylist.bind(this);
     this.getNewPlaylists = this.getNewPlaylists.bind(this);
+    this.deleteFromPlaylist = this.deleteFromPlaylist.bind(this);
   }
 
   // Get newly created playlists
@@ -41,17 +42,26 @@ class App extends Component {
 
   // User clicks add to playlist
   passToPlaylist(video, id) {
-    const obj = {
-      playlistId: id,
-      item: video[0],
-    };
     let playlists = this.state.playlistsAvailable.slice();
     playlists.forEach((playlist, index) => {
       if (index === id) {
-        playlist.videos.push(obj.item);
+        playlist.videos.push(video[0]);
       }
     });
     this.setState({ playlistsAvailable: playlists });
+  }
+
+  // Delete from playlist
+  deleteFromPlaylist(playlistText, index) {
+    let playlistsAvailable = this.state.playlistsAvailable.slice();
+
+    // Looping available playlists and checking for the video to delete
+    playlistsAvailable.forEach((playlist) => {
+      if (playlist.name === playlistText) {
+        playlist.videos.splice(index, 1);
+      }
+    });
+    this.setState({ playlistsAvailable: playlistsAvailable });
   }
 
   render() {
@@ -60,7 +70,7 @@ class App extends Component {
         <Search searchText={this.searchText} />
         <Row className="show-grid">
           <Playlist playlistItem={this.state.playlistToReturn} playlistItemFunction={this.playlistItemFunction} getNewPlaylists={this.getNewPlaylists} />
-          <Videos passToParent={this.passToPlaylist} data={this.state.returnedData} playlistsAvailable={this.state.playlistsAvailable} />
+          <Videos passToParent={this.passToPlaylist} data={this.state.returnedData} playlistsAvailable={this.state.playlistsAvailable} deletePlaylistItem={this.deleteFromPlaylist} />
         </Row>
       </Grid>
     );

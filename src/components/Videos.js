@@ -14,6 +14,7 @@ class Videos extends Component {
     };
     this.updateVideos = this.updateVideos.bind(this);
     this.addToPlaylist = this.addToPlaylist.bind(this);
+    this.deleteFromPlaylist = this.deleteFromPlaylist.bind(this);
   }
 
   componentDidUpdate() {
@@ -45,6 +46,11 @@ class Videos extends Component {
     this.props.passToParent(video, id);
   }
 
+  deleteFromPlaylist(index) {
+    // Passing the name of the playlist and the index where the playlist video is present
+    this.props.deletePlaylistItem(this.state.playlistText, index);
+  }
+
   render() {
     return (
       <div id="videos">
@@ -52,7 +58,7 @@ class Videos extends Component {
         {this.state.searchText !== ''
           ? this.state.data.map(item => (
             <Col md={4} className="video-items">
-              <iframe id={item.etag} src={item.snippet.thumbnails.medium.url} width={item.snippet.thumbnails.medium.width} height={item.snippet.thumbnails.medium.height} scrolling="no" />
+              <iframe title={item.etag} src={item.snippet.thumbnails.medium.url} width={item.snippet.thumbnails.medium.width} height={item.snippet.thumbnails.medium.height} scrolling="no" />
               <p><strong>{item.snippet.title}</strong></p>
               <DropdownButton title="Add To Playlist">
                 {this.props.playlistsAvailable.map( 
@@ -63,11 +69,11 @@ class Videos extends Component {
               </DropdownButton>
             </Col>
           ))
-          : this.state.data.map(item => (
+          : this.state.data.map((item, index) => (
             <Col md={4} className="video-items">
-              <iframe id={item.etag} src={item.snippet.thumbnails.medium.url} width={item.snippet.thumbnails.medium.width} height={item.snippet.thumbnails.medium.height} scrolling="no" />
+              <iframe title={item.etag} src={item.snippet.thumbnails.medium.url} width={item.snippet.thumbnails.medium.width} height={item.snippet.thumbnails.medium.height} scrolling="no" />
               <p><strong>{item.snippet.title}</strong></p>
-              <Button>Delete</Button>
+              <Button id={index} onClick={() => this.deleteFromPlaylist(index)}>Delete</Button>
             </Col>
           ))}
       </div>
