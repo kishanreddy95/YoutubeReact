@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './styles.css';
 import { Row, Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 class Search extends Component {
   constructor(props) {
@@ -33,7 +34,7 @@ class Search extends Component {
           <input id="textbox" type="text" placeholder="Search..." onChange={this.getData} />
         </Col>
         <Col md={2}>
-          <button onClick={this.searchButtonClickHandler} type="submit">Search</button>
+          <Link to={`${this.props.match.url}results`}><button onClick={this.searchButtonClickHandler} type="submit">Search</button></Link>
         </Col>
       </Row>
     );

@@ -3,6 +3,7 @@ import './styles.css';
 import {
   Col, DropdownButton, MenuItem, Button,
 } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 class Videos extends Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class Videos extends Component {
   }
 
   componentDidUpdate() {
+    console.log(this.props);
     // Comparing the new props is not equal to previous state values to prevent infinite looping
     if (this.props.data !== this.state.searchText && this.props.data.name !== this.state.playlistText) {
       this.updateVideos(this.props.data);
@@ -54,7 +56,6 @@ class Videos extends Component {
   render() {
     return (
       <div id="videos">
-      
         {this.state.searchText !== ''
           ? this.state.data.map(item => (
             <Col md={4} className="video-items">
@@ -67,8 +68,7 @@ class Videos extends Component {
                   },
                 )}
               </DropdownButton>
-            </Col>
-          ))
+            </Col>))
           : this.state.data.map((item, index) => (
             <Col md={4} className="video-items">
               <iframe title={item.etag} src={item.snippet.thumbnails.medium.url} width={item.snippet.thumbnails.medium.width} height={item.snippet.thumbnails.medium.height} scrolling="no" />

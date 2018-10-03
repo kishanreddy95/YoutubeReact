@@ -4,7 +4,7 @@
   "description": "Youtube React App",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --mode development --open --hot",
+    "start": "webpack-dev-server --mode development --open --hot --history-api-fallback",
     "build": "webpack --mode production"
   },
   "keywords": [
@@ -15,10 +15,12 @@
   "license": "ISC",
   "dependencies": {
     "es6-promise": "^4.2.5",
+    "history": "^4.7.2",
     "isomorphic-fetch": "^2.2.1",
     "react": "^16.5.2",
     "react-bootstrap": "^0.32.4",
-    "react-dom": "^16.5.2"
+    "react-dom": "^16.5.2",
+    "react-router-dom": "^4.3.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",

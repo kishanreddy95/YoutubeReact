@@ -3,15 +3,15 @@ import {
   ListGroup, ListGroupItem, Col, Popover, OverlayTrigger, ButtonToolbar, ControlLabel, FormControl,
   Button,
 } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 class Playlist extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      playlistItems: [],
+      playlistItems: [{ name: 'name', videos: [] }],
     };
     this.displayPlaylists = this.displayPlaylists.bind(this);
-    // this.updatePlaylists = this.updatePlaylists.bind(this);
     this.createPlaylist = this.createPlaylist.bind(this);
   }
 
@@ -27,7 +27,7 @@ class Playlist extends Component {
     this.props.playlistItemFunction(index);
   }
 
-  // Creatting a new playlist
+  // Creating a new playlist
   createPlaylist() {
     const playlistItems = this.state.playlistItems.slice();
     // Creates an empty playlist object
@@ -61,6 +61,7 @@ class Playlist extends Component {
     );
     return (
       <Col md={2}>
+        {console.log(this.state.playlistItems)}
         <ListGroup>
           <ButtonToolbar>
             <OverlayTrigger trigger="click" placement="bottom" overlay={createPlaylistPopover}>
@@ -70,7 +71,7 @@ class Playlist extends Component {
         </ListGroup>
         <ListGroup id="list-of-playlists">
           {this.state.playlistItems.map(
-            (item, index) => <ListGroupItem playlistId={index} onClick={() => { this.displayPlaylists(index); }}>{item.name}</ListGroupItem>,
+            (item, index) => <Link to={`${this.props.match.url}playlists/${item.name}`}><ListGroupItem playlistId={index} onClick={() => { this.displayPlaylists(index); }}>{item.name}</ListGroupItem></Link>,
           )}
         </ListGroup>
       </Col>

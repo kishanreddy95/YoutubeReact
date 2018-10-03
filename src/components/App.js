@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Grid, Row } from 'react-bootstrap';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import Search from './Search';
 import Videos from './Videos';
 import Playlist from './Playlist';
@@ -34,7 +35,7 @@ class App extends Component {
 
   // User clicks playlist menu
   playlistItemFunction(index) {
-    let playlistListToReturn  = this.state.playlistsAvailable[index];
+    const playlistListToReturn = this.state.playlistsAvailable[index];
     this.setState({ returnedData: playlistListToReturn }, () => {
       console.log(this.state.returnedData);
     });
@@ -42,7 +43,7 @@ class App extends Component {
 
   // User clicks add to playlist
   passToPlaylist(video, id) {
-    let playlists = this.state.playlistsAvailable.slice();
+    const playlists = this.state.playlistsAvailable.slice();
     playlists.forEach((playlist, index) => {
       if (index === id) {
         playlist.videos.push(video[0]);
@@ -53,7 +54,7 @@ class App extends Component {
 
   // Delete from playlist
   deleteFromPlaylist(playlistText, index) {
-    let playlistsAvailable = this.state.playlistsAvailable.slice();
+    const playlistsAvailable = this.state.playlistsAvailable.slice();
 
     // Looping available playlists and checking for the video to delete
     playlistsAvailable.forEach((playlist) => {
@@ -66,13 +67,15 @@ class App extends Component {
 
   render() {
     return (
-      <Grid id="main" fluid>
-        <Search searchText={this.searchText} />
-        <Row className="show-grid">
-          <Playlist playlistItem={this.state.playlistToReturn} playlistItemFunction={this.playlistItemFunction} getNewPlaylists={this.getNewPlaylists} />
-          <Videos passToParent={this.passToPlaylist} data={this.state.returnedData} playlistsAvailable={this.state.playlistsAvailable} deletePlaylistItem={this.deleteFromPlaylist} />
-        </Row>
-      </Grid>
+      <Router>
+        <Grid id="main" fluid>
+          <Route path="/" render={({ match }) => <Search match={match} searchText={this.searchText} />} />
+          <Row className="show-grid">
+            <Route path="/" render={({ match }) => <Playlist match={match} playlistItem={this.state.playlistToReturn} playlistItemFunction={this.playlistItemFunction} getNewPlaylists={this.getNewPlaylists} />} />
+            <Route path="/" render={({ match }) => { return <Videos match={match} passToParent={this.passToPlaylist} data={this.state.returnedData} playlistsAvailable={this.state.playlistsAvailable} deletePlaylistItem={this.deleteFromPlaylist} />; }} />
+          </Row>
+        </Grid>
+      </Router>
     );
   }
 }

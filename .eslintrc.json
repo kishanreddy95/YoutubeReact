@@ -8,6 +8,7 @@
     "rules": {
         "indent": ["error", 2],
         "react/jsx-filename-extension": 0,
-        "linebreak-style": 0
+        "linebreak-style": 0,
+        "react/destructuring-assignment": ["enabled", "never"]
     }
 }
