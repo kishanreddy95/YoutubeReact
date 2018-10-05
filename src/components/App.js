@@ -9,14 +9,12 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      returnedData: '',
       playlistToReturn: {
         playlistId: '',
         item: [],
       },
       playlistsAvailable: [],
     };
-    this.searchText = this.searchText.bind(this);
     this.playlistItemFunction = this.playlistItemFunction.bind(this);
     this.passToPlaylist = this.passToPlaylist.bind(this);
     this.getNewPlaylists = this.getNewPlaylists.bind(this);
@@ -26,11 +24,6 @@ class App extends Component {
   // Get newly created playlists
   getNewPlaylists(playlist) {
     this.setState({ playlistsAvailable: playlist });
-  }
-
-  // User clicks search
-  searchText(dataFromSearch) {
-    this.setState({ returnedData: dataFromSearch });
   }
 
   // User clicks playlist menu
@@ -72,7 +65,7 @@ class App extends Component {
           <Route path="/" render={({ match }) => <Search match={match} searchText={this.searchText} />} />
           <Row className="show-grid">
             <Route path="/" render={({ match }) => <Playlist match={match} playlistItem={this.state.playlistToReturn} playlistItemFunction={this.playlistItemFunction} getNewPlaylists={this.getNewPlaylists} />} />
-            <Route path="/" render={({ match }) => { return <Videos match={match} passToParent={this.passToPlaylist} data={this.state.returnedData} playlistsAvailable={this.state.playlistsAvailable} deletePlaylistItem={this.deleteFromPlaylist} />; }} />
+            <Route path="/" render={({ match }) => { return <Videos match={match} passToParent={this.passToPlaylist} playlistsAvailable={this.state.playlistsAvailable} deletePlaylistItem={this.deleteFromPlaylist} />; }} />
           </Row>
         </Grid>
       </Router>

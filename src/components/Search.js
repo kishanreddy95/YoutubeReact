@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './styles.css';
 import { Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { searchVideo } from '../redux/actions';
 
 class Search extends Component {
   constructor(props) {
@@ -21,7 +23,7 @@ class Search extends Component {
 
   // Send the search text to App Component on clicking search button
   searchButtonClickHandler() {
-    this.props.searchText(this.state.inputText);
+    this.props.searchVideo(this.state.inputText);
   }
 
   render() {
@@ -41,4 +43,7 @@ class Search extends Component {
   }
 }
 
-export default Search;
+export default connect(
+  null,
+  { searchVideo },
+)(Search);
