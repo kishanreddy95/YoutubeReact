@@ -9,7 +9,7 @@ class Playlist extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      playlistItems: [{ name: 'name', videos: [] }],
+      playlistItems: [],
     };
     this.displayPlaylists = this.displayPlaylists.bind(this);
     this.createPlaylist = this.createPlaylist.bind(this);
@@ -61,7 +61,6 @@ class Playlist extends Component {
     );
     return (
       <Col md={2}>
-        {console.log(this.state.playlistItems)}
         <ListGroup>
           <ButtonToolbar>
             <OverlayTrigger trigger="click" placement="bottom" overlay={createPlaylistPopover}>
