@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Grid, Row } from 'react-bootstrap';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Search from './Search';
 import Videos from './Videos';
 import Playlist from './Playlist';
@@ -65,7 +65,7 @@ class App extends Component {
           <Route path="/" render={({ match }) => <Search match={match} searchText={this.searchText} />} />
           <Row className="show-grid">
             <Route path="/" render={({ match }) => <Playlist match={match} playlistItem={this.state.playlistToReturn} playlistItemFunction={this.playlistItemFunction} getNewPlaylists={this.getNewPlaylists} />} />
-            <Route path="/" render={({ match }) => { return <Videos match={match} passToParent={this.passToPlaylist} playlistsAvailable={this.state.playlistsAvailable} deletePlaylistItem={this.deleteFromPlaylist} />; }} />
+            <Route path="/" render={({ match }) => <Videos match={match} passToParent={this.passToPlaylist} playlistsAvailable={this.state.playlistsAvailable} deletePlaylistItem={this.deleteFromPlaylist} />} />
           </Row>
         </Grid>
       </Router>

@@ -11,7 +11,18 @@ export const searchResults = videos => ({
 
 export const createPlaylist = playlist => ({
   type: 'CREATE_PLAYLIST',
-  playlist
+  playlist,
 });
 
-// export const 
+export const addToPlaylist = playlist => ({
+  type: 'ADD_TO_PLAYLIST',
+  data: {
+    id: playlist.id,
+    video: playlist.video,
+  },
+});
+
+export const viewPlaylist = index => ({
+  type: 'VIEW_PLAYLIST',
+  index,
+});

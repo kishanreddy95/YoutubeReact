@@ -4,24 +4,19 @@ import {
   Col, DropdownButton, MenuItem, Button,
 } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { searchResults } from '../redux/actions';
+import { searchResults, addToPlaylist } from '../redux/actions';
 
 class Videos extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      searchText: '',
-      playlistText: '',
-      data: [],
-    };
     this.updateVideos = this.updateVideos.bind(this);
     this.addToPlaylist = this.addToPlaylist.bind(this);
     this.deleteFromPlaylist = this.deleteFromPlaylist.bind(this);
   }
 
-  componentDidUpdate() {
-    // Comparing the new props is not equal to previous state values to prevent infinite looping
-    if (this.props.text !== this.state.searchText) {
+  componentDidUpdate(nextProps) {
+    // Comparing the current props.text is not equal to next prop.text values to prevent re-rendering
+    if (this.props.text !== nextProps.text) {
       this.updateVideos(this.props);
     }
   }
@@ -29,24 +24,21 @@ class Videos extends Component {
   updateVideos(props) {
     const key = 'AIzaSyCgk0leS6QuJi0RBfPCaiKkOieT6O_qQXg';
 
-    // Checking if search is clicked or a playlist item request
-    if (typeof props.text === 'string') {
-      this.setState({ searchText: props.text }, () => {
-        fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=${props.text}&type=video&key=${key}`)
-          .then(data => data.json())
-          .then((videos) => {
-            this.setState({ playlistText: '', data: videos.items });
-            this.props.sendToStore(videos.items);
-          });
+    // Fetching videos from Youtube Api and dispatching them to update redux store
+    fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=${props.text}&type=video&key=${key}`)
+      .then(data => data.json())
+      .then((videos) => {
+        this.props.sendVideosToStore(videos.items);
       });
-    } else {
-      this.setState({ searchText: '', playlistText: props.name, data: props.videos });
-    }
   }
 
   addToPlaylist(etag, id) {
-    const video = this.state.data.filter(item => item.etag === etag);
-    this.props.passToParent(video, id);
+    const video = this.props.videos.filter(item => item.etag === etag);
+    const videoObj = {
+      id,
+      video: video[0],
+    };
+    this.props.sendVideoToPlaylist(videoObj);
   }
 
   deleteFromPlaylist(index) {
@@ -55,10 +47,11 @@ class Videos extends Component {
   }
 
   render() {
+    console.log(this.props.videos);
     return (
       <div id="videos">
-        {this.state.searchText !== ''
-          ? this.state.data.map(item => (
+        {this.props.videos.length !== 0
+          ? this.props.videos.map(item => (
             <Col md={4} className="video-items">
               <iframe title={item.etag} src={item.snippet.thumbnails.medium.url} width={item.snippet.thumbnails.medium.width} height={item.snippet.thumbnails.medium.height} scrolling="no" />
               <p><strong>{item.snippet.title}</strong></p>
@@ -70,7 +63,7 @@ class Videos extends Component {
                 )}
               </DropdownButton>
             </Col>))
-          : this.state.data.map((item, index) => (
+          : this.props.videos.map((item, index) => (
             <Col md={4} className="video-items">
               <iframe title={item.etag} src={item.snippet.thumbnails.medium.url} width={item.snippet.thumbnails.medium.width} height={item.snippet.thumbnails.medium.height} scrolling="no" />
               <p><strong>{item.snippet.title}</strong></p>
@@ -84,14 +77,19 @@ class Videos extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    text: state.search.text,
+    text: state.search,
+    videos: state.videos,
+    playlistsAvailable: state.playlists,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    sendToStore: (data) => {
-      dispatch(searchResults(data));
+    sendVideosToStore: (videos) => {
+      dispatch(searchResults(videos));
+    },
+    sendVideoToPlaylist: (video) => {
+      dispatch(addToPlaylist(video));
     },
   };
 };

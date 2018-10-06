@@ -4,32 +4,38 @@ import {
   Button,
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { createPlaylist, viewPlaylist } from '../redux/actions';
+
 
 class Playlist extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      playlistItems: [],
-    };
     this.displayPlaylists = this.displayPlaylists.bind(this);
     this.createPlaylist = this.createPlaylist.bind(this);
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.state !== nextState) {
+  shouldComponentUpdate(nextProps) {
+    if (this.props.playlistsAvailable !== nextProps) {
       return true;
     }
     return false;
   }
 
   // View the playlists added
-  displayPlaylists(index) {
-    this.props.playlistItemFunction(index);
+  displayPlaylists(id) {
+    const playlist = this.props.playlistsAvailable.filter((list, index) => {
+      if (index === id) {
+        return list.videos;
+      }
+    })[0];
+    console.log(playlist.videos);
+    this.props.sendPlaylistToDisplay(index);
   }
 
   // Creating a new playlist
   createPlaylist() {
-    const playlistItems = this.state.playlistItems.slice();
+    const playlistsAvailable = [...this.props.playlistsAvailable];
     // Creates an empty playlist object
     const playlistObject = {
       name: this.playlistname.value,
@@ -37,13 +43,10 @@ class Playlist extends Component {
     };
 
     // Pushing the playlist object into to existing playlists
-    playlistItems.push(playlistObject);
+    playlistsAvailable.push(playlistObject);
 
-    // Update the playlistItems state
-    this.setState({ playlistItems: playlistItems });
-
-    // Passing available playlists to the parent App.js component
-    this.props.getNewPlaylists(playlistItems);
+    // Dispatch Playlists available to Store
+    this.props.sendAvailablePlaylistsToStore(playlistsAvailable);
   }
 
   render() {
@@ -69,7 +72,7 @@ class Playlist extends Component {
           </ButtonToolbar>
         </ListGroup>
         <ListGroup id="list-of-playlists">
-          {this.state.playlistItems.map(
+          {this.props.playlistsAvailable.map(
             (item, index) => <Link to={`${this.props.match.url}playlists/${item.name}`}><ListGroupItem playlistId={index} onClick={() => { this.displayPlaylists(index); }}>{item.name}</ListGroupItem></Link>,
           )}
         </ListGroup>
@@ -79,4 +82,21 @@ class Playlist extends Component {
   }
 }
 
-export default Playlist;
+const mapStateToProps = (state) => {
+  return {
+    playlistsAvailable: state.playlists,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    sendAvailablePlaylistsToStore: (playlists) => {
+      dispatch(createPlaylist(playlists));
+    },
+    sendPlaylistToDisplay: (playlistIndex) => {
+      dispatch(viewPlaylist(playlistIndex));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Playlist);

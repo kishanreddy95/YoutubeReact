@@ -9,9 +9,7 @@ const initialState = {
 function search(state = initialState.text, action) {
   switch (action.type) {
   case 'SEARCH_VIDEO': {
-    return {
-      text: action.text,
-    };
+    return action.text;
   }
   default: return state;
   }
@@ -20,26 +18,34 @@ function search(state = initialState.text, action) {
 function videos(state = initialState.videos, action) {
   switch (action.type) {
   case 'SEARCH_RESULTS': {
-    return {
-      videos: [...action.videos],
-    };
+    return action.videos;
   }
   default: return state;
   }
 }
 
-function playlist(state = initialState.playlists, action) {
+function playlists(state = initialState.playlists, action) {
   switch (action.type) {
-    case 'CREATE_PLAYLIST': 
-    return {
-      playlists: [...action.videos]
-    }
+  case 'CREATE_PLAYLIST': {
+    return action.playlist;
+  }
+  case 'ADD_TO_PLAYLIST': {
+    const playlistCopy = [...state];
+    playlistCopy.map((playlist, index) => {
+      if (index === action.data.id) {
+        playlist.videos.push(action.data.video);
+      }
+    });
+    return playlistCopy;
+  }
+  default: return state;
   }
 }
 
 const reducer = combineReducers({
   search,
   videos,
+  playlists,
 });
 
 
