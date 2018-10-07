@@ -2,7 +2,10 @@ import { combineReducers } from 'redux';
 
 const initialState = {
   text: '',
-  videos: [],
+  videos: {
+    type: '',
+    videos: [],
+  },
   playlists: [],
 };
 
@@ -18,7 +21,16 @@ function search(state = initialState.text, action) {
 function videos(state = initialState.videos, action) {
   switch (action.type) {
   case 'SEARCH_RESULTS': {
-    return action.videos;
+    return {
+      type: 'search',
+      videos: action.videos,
+    };
+  }
+  case 'VIEW_PLAYLIST': {
+    return {
+      type: 'playlist',
+      videos: action.playlistVideos,
+    };
   }
   default: return state;
   }

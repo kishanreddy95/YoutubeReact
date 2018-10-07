@@ -5,7 +5,7 @@ import {
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { createPlaylist, viewPlaylist } from '../redux/actions';
+import { createPlaylist, viewPlaylist, searchVideo } from '../redux/actions';
 
 
 class Playlist extends Component {
@@ -29,8 +29,10 @@ class Playlist extends Component {
         return list.videos;
       }
     })[0];
-    console.log(playlist.videos);
-    this.props.sendPlaylistToDisplay(index);
+    // Resetting the search to allow searching same videos again
+    this.props.resetSearch('');
+    // Pass the playlist to display to the redux store
+    this.props.sendPlaylistToDisplay(playlist.videos);
   }
 
   // Creating a new playlist
@@ -82,11 +84,7 @@ class Playlist extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    playlistsAvailable: state.playlists,
-  };
-};
+const mapStateToProps = state => ({ playlistsAvailable: state.playlists });
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -95,6 +93,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     sendPlaylistToDisplay: (playlistIndex) => {
       dispatch(viewPlaylist(playlistIndex));
+    },
+    resetSearch: (text) => {
+      dispatch(searchVideo(text));
     },
   };
 };

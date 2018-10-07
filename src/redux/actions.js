@@ -22,7 +22,7 @@ export const addToPlaylist = playlist => ({
   },
 });
 
-export const viewPlaylist = index => ({
+export const viewPlaylist = playlistVideos => ({
   type: 'VIEW_PLAYLIST',
-  index,
+  playlistVideos,
 });

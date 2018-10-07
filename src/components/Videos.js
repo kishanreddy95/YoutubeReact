@@ -16,7 +16,7 @@ class Videos extends Component {
 
   componentDidUpdate(nextProps) {
     // Comparing the current props.text is not equal to next prop.text values to prevent re-rendering
-    if (this.props.text !== nextProps.text) {
+    if (this.props.text !== nextProps.text && this.props.text !== '') {
       this.updateVideos(this.props);
     }
   }
@@ -32,8 +32,9 @@ class Videos extends Component {
       });
   }
 
+  // Adding videos to Playlists in the redux store
   addToPlaylist(etag, id) {
-    const video = this.props.videos.filter(item => item.etag === etag);
+    const video = this.props.videos.videos.filter(item => item.etag === etag);
     const videoObj = {
       id,
       video: video[0],
@@ -47,11 +48,10 @@ class Videos extends Component {
   }
 
   render() {
-    console.log(this.props.videos);
     return (
       <div id="videos">
-        {this.props.videos.length !== 0
-          ? this.props.videos.map(item => (
+        {this.props.videos.type === 'search'
+          ? this.props.videos.videos.map(item => (
             <Col md={4} className="video-items">
               <iframe title={item.etag} src={item.snippet.thumbnails.medium.url} width={item.snippet.thumbnails.medium.width} height={item.snippet.thumbnails.medium.height} scrolling="no" />
               <p><strong>{item.snippet.title}</strong></p>
@@ -63,7 +63,7 @@ class Videos extends Component {
                 )}
               </DropdownButton>
             </Col>))
-          : this.props.videos.map((item, index) => (
+          : this.props.videos.videos.map((item, index) => (
             <Col md={4} className="video-items">
               <iframe title={item.etag} src={item.snippet.thumbnails.medium.url} width={item.snippet.thumbnails.medium.width} height={item.snippet.thumbnails.medium.height} scrolling="no" />
               <p><strong>{item.snippet.title}</strong></p>
