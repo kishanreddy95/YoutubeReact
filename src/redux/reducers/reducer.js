@@ -28,7 +28,7 @@ function videos(state = initialState.videos, action) {
   }
   case 'VIEW_PLAYLIST': {
     return {
-      type: 'playlist',
+      type: action.playlistName,
       videos: action.playlistVideos,
     };
   }
@@ -49,6 +49,15 @@ function playlists(state = initialState.playlists, action) {
       }
     });
     return playlistCopy;
+  }
+  case 'DELETE_PLAYLIST_VIDEO': {
+    const playlistAfterDeletion = state.map((playlist) => {
+      if (playlist.name === action.playlistName) {
+        playlist.videos.splice(action.videoId, 1);
+      }
+      return playlist;
+    });
+    return playlistAfterDeletion;
   }
   default: return state;
   }

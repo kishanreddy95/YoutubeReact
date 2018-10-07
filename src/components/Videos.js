@@ -4,7 +4,7 @@ import {
   Col, DropdownButton, MenuItem, Button,
 } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { searchResults, addToPlaylist } from '../redux/actions';
+import { searchResults, addToPlaylist, deleteVideoFromPlaylist } from '../redux/actions';
 
 class Videos extends Component {
   constructor(props) {
@@ -43,8 +43,8 @@ class Videos extends Component {
   }
 
   deleteFromPlaylist(index) {
-    // Passing the name of the playlist and the index where the playlist video is present
-    this.props.deletePlaylistItem(this.state.playlistText, index);
+    // Passing the index which is the id for the playlist video to delete
+    this.props.deleteVideoFromPlaylist(this.props.videos.type, index);
   }
 
   render() {
@@ -56,10 +56,8 @@ class Videos extends Component {
               <iframe title={item.etag} src={item.snippet.thumbnails.medium.url} width={item.snippet.thumbnails.medium.width} height={item.snippet.thumbnails.medium.height} scrolling="no" />
               <p><strong>{item.snippet.title}</strong></p>
               <DropdownButton title="Add To Playlist">
-                {this.props.playlistsAvailable.map( 
-                  (playlist, index) => {
-                    return <MenuItem id={index} onClick={() => this.addToPlaylist(item.etag, index)}>{playlist.name}</MenuItem>;
-                  },
+                {this.props.playlistsAvailable.map(
+                  (playlist, index) => <MenuItem id={index} onClick={() => this.addToPlaylist(item.etag, index)}>{playlist.name}</MenuItem>,
                 )}
               </DropdownButton>
             </Col>))
@@ -67,7 +65,7 @@ class Videos extends Component {
             <Col md={4} className="video-items">
               <iframe title={item.etag} src={item.snippet.thumbnails.medium.url} width={item.snippet.thumbnails.medium.width} height={item.snippet.thumbnails.medium.height} scrolling="no" />
               <p><strong>{item.snippet.title}</strong></p>
-              <Button id={index} onClick={() => this.deleteFromPlaylist(index)}>Delete</Button>
+              <Button id={index} onClick={() => this.deleteFromPlaylist(index)}>Remove</Button>
             </Col>
           ))}
       </div>
@@ -75,23 +73,22 @@ class Videos extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    text: state.search,
-    videos: state.videos,
-    playlistsAvailable: state.playlists,
-  };
-};
+const mapStateToProps = state => ({
+  text: state.search,
+  videos: state.videos,
+  playlistsAvailable: state.playlists,
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    sendVideosToStore: (videos) => {
-      dispatch(searchResults(videos));
-    },
-    sendVideoToPlaylist: (video) => {
-      dispatch(addToPlaylist(video));
-    },
-  };
-};
+const mapDispatchToProps = dispatch => ({
+  sendVideosToStore: (videos) => {
+    dispatch(searchResults(videos));
+  },
+  sendVideoToPlaylist: (video) => {
+    dispatch(addToPlaylist(video));
+  },
+  deleteVideoFromPlaylist: (playlistName, videoId) => {
+    dispatch(deleteVideoFromPlaylist(playlistName, videoId));
+  },
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Videos);

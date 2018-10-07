@@ -32,7 +32,7 @@ class Playlist extends Component {
     // Resetting the search to allow searching same videos again
     this.props.resetSearch('');
     // Pass the playlist to display to the redux store
-    this.props.sendPlaylistToDisplay(playlist.videos);
+    this.props.sendPlaylistToDisplay(playlist.name, playlist.videos);
   }
 
   // Creating a new playlist
@@ -86,18 +86,16 @@ class Playlist extends Component {
 
 const mapStateToProps = state => ({ playlistsAvailable: state.playlists });
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    sendAvailablePlaylistsToStore: (playlists) => {
-      dispatch(createPlaylist(playlists));
-    },
-    sendPlaylistToDisplay: (playlistIndex) => {
-      dispatch(viewPlaylist(playlistIndex));
-    },
-    resetSearch: (text) => {
-      dispatch(searchVideo(text));
-    },
-  };
-};
+const mapDispatchToProps = dispatch => ({
+  sendAvailablePlaylistsToStore: (playlists) => {
+    dispatch(createPlaylist(playlists));
+  },
+  sendPlaylistToDisplay: (playlistName, playlistIndex) => {
+    dispatch(viewPlaylist(playlistName, playlistIndex));
+  },
+  resetSearch: (text) => {
+    dispatch(searchVideo(text));
+  },
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Playlist);

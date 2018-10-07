@@ -22,7 +22,14 @@ export const addToPlaylist = playlist => ({
   },
 });
 
-export const viewPlaylist = playlistVideos => ({
+export const viewPlaylist = (playlistName, playlistVideos) => ({
   type: 'VIEW_PLAYLIST',
+  playlistName,
   playlistVideos,
+});
+
+export const deleteVideoFromPlaylist = (playlistName, videoId) => ({
+  type: 'DELETE_PLAYLIST_VIDEO',
+  playlistName,
+  videoId,
 });
