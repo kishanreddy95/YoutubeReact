@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   ListGroup, ListGroupItem, Col, Popover, OverlayTrigger, ButtonToolbar, ControlLabel, FormControl,
-  Button,
+  Button, Badge
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -75,7 +75,7 @@ class Playlist extends Component {
         </ListGroup>
         <ListGroup id="list-of-playlists">
           {this.props.playlistsAvailable.map(
-            (item, index) => <Link to={`${this.props.match.url}playlists/${item.name}`}><ListGroupItem playlistId={index} onClick={() => { this.displayPlaylists(index); }}>{item.name}</ListGroupItem></Link>,
+            (item, index) => <Link to={`${this.props.match.url}playlists/${item.name}`}><ListGroupItem playlistId={index} onClick={() => { this.displayPlaylists(index); }}>{item.name} <Badge>{item.videos.length}</Badge></ListGroupItem></Link>,
           )}
         </ListGroup>
       </Col>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './styles.css';
 import {
-  Col, DropdownButton, MenuItem, Button,
+  Col, DropdownButton, MenuItem, Button, Glyphicon,
 } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { searchResults, addToPlaylist, deleteVideoFromPlaylist } from '../redux/actions';
@@ -15,7 +15,7 @@ class Videos extends Component {
   }
 
   componentDidUpdate(nextProps) {
-    // Comparing the current props.text is not equal to next prop.text values to prevent re-rendering
+    // Comparing the current props.text is not equal to next props.text values to prevent re-rendering
     if (this.props.text !== nextProps.text && this.props.text !== '') {
       this.updateVideos(this.props);
     }
@@ -28,16 +28,18 @@ class Videos extends Component {
     fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=${props.text}&type=video&key=${key}`)
       .then(data => data.json())
       .then((videos) => {
+        console.log(videos.items);
         this.props.sendVideosToStore(videos.items);
-      });
+      }).catch(err => console.log(err));
   }
 
   // Adding videos to Playlists in the redux store
   addToPlaylist(etag, id) {
-    const video = this.props.videos.videos.filter(item => item.etag === etag);
+    const video = this.props.videos.videos.filter(item => item.etag === etag)[0];
+    video.presentInPlaylist = !video.presentInPlaylist;
     const videoObj = {
       id,
-      video: video[0],
+      video: video,
     };
     this.props.sendVideoToPlaylist(videoObj);
   }
@@ -56,9 +58,23 @@ class Videos extends Component {
               <iframe title={item.etag} src={item.snippet.thumbnails.medium.url} width={item.snippet.thumbnails.medium.width} height={item.snippet.thumbnails.medium.height} scrolling="no" />
               <p><strong>{item.snippet.title}</strong></p>
               <DropdownButton title="Add To Playlist">
-                {this.props.playlistsAvailable.map(
-                  (playlist, index) => <MenuItem id={index} onClick={() => this.addToPlaylist(item.etag, index)}>{playlist.name}</MenuItem>,
-                )}
+                {this.props.playlistsAvailable.map((playlist, index) => {
+                  let count = 0;
+                  playlist.videos.forEach((video) => {
+                    if (video.etag === item.etag) {
+                      count += 1;
+                    }
+                  });
+                  if (count > 0) {
+                    return (
+                      <MenuItem id={index} onClick={() => this.addToPlaylist(item.etag, index)} disabled>
+                        {playlist.name}
+                          &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                        <Glyphicon glyph="glyphicon glyphicon-ok" />
+                      </MenuItem>);
+                  }
+                  return (<MenuItem id={index} onClick={() => this.addToPlaylist(item.etag, index)}>{playlist.name}</MenuItem>)
+                })}
               </DropdownButton>
             </Col>))
           : this.props.videos.videos.map((item, index) => (

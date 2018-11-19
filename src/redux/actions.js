@@ -1,21 +1,24 @@
+import {
+  SEARCH_VIDEO, SEARCH_RESULTS, CREATE_PLAYLIST, ADD_TO_PLAYLIST, VIEW_PLAYLIST, DELETE_PLAYLIST_VIDEO,
+} from './constants/actionTypes';
 
 export const searchVideo = text => ({
-  type: 'SEARCH_VIDEO',
+  type: SEARCH_VIDEO,
   text,
 });
 
 export const searchResults = videos => ({
-  type: 'SEARCH_RESULTS',
+  type: SEARCH_RESULTS,
   videos,
 });
 
 export const createPlaylist = playlist => ({
-  type: 'CREATE_PLAYLIST',
+  type: CREATE_PLAYLIST,
   playlist,
 });
 
 export const addToPlaylist = playlist => ({
-  type: 'ADD_TO_PLAYLIST',
+  type: ADD_TO_PLAYLIST,
   data: {
     id: playlist.id,
     video: playlist.video,
@@ -23,13 +26,13 @@ export const addToPlaylist = playlist => ({
 });
 
 export const viewPlaylist = (playlistName, playlistVideos) => ({
-  type: 'VIEW_PLAYLIST',
+  type: VIEW_PLAYLIST,
   playlistName,
   playlistVideos,
 });
 
 export const deleteVideoFromPlaylist = (playlistName, videoId) => ({
-  type: 'DELETE_PLAYLIST_VIDEO',
+  type: DELETE_PLAYLIST_VIDEO,
   playlistName,
   videoId,
 });
