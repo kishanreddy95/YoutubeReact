@@ -22,7 +22,7 @@ class Videos extends Component {
   }
 
   updateVideos(props) {
-    const key = 'AIzaSyCgk0leS6QuJi0RBfPCaiKkOieT6O_qQXg';
+    const key = 'AIzaSyCxTKmbCTIYiCF-e5cDpG2Xov5n-afeyyU';
 
     // Fetching videos from Youtube Api and dispatching them to update redux store
     fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=${props.text}&type=video&key=${key}`)
